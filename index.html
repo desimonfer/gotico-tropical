@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gótico Tropical</title>
+<style>
+  @font-face {
+    font-family: 'Brasilero';
+    src: url('https://raw.githubusercontent.com/desimonfer/fontes/main/Brasilero2018Free.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0f0a;
+    color: #e8e0d0;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* CANOPY — animated leaves */
+  .canopy {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .leaf {
+    position: absolute;
+    opacity: 0.13;
+  }
+
+  /* COLOR MIST */
+  .mist {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 20%, #1a4d2e55 0%, transparent 70%),
+      radial-gradient(ellipse 50% 50% at 10% 70%, #3b1a5a44 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 50% 90%, #7a1e2833 0%, transparent 70%);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #7ecba1;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Brasilero', 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    font-weight: normal;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    background: linear-gradient(160deg, #e8e0d0 30%, #7ecba1 60%, #c084fc 90%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  .hero-line {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, #7ecba1, transparent);
+    margin: 2.5rem auto;
+    opacity: 0;
+    animation: fadeIn 1s ease 1s forwards;
+  }
+
+  .hero-tagline {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: #b8a898;
+    max-width: 520px;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #4a6b4a;
+    animation: pulse 3s ease infinite;
+  }
+
+  /* MANIFESTO */
+  .manifesto-section {
+    position: relative;
+    z-index: 1;
+    padding: 8rem 2rem;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #7ecba1;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, #7ecba133, transparent);
+  }
+
+  .manifesto-text {
+    font-family: 'Brasilero', 'Playfair Display', serif;
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    line-height: 2;
+    color: #d0c8b8;
+  }
+
+  .manifesto-text p {
+    margin-bottom: 1.5em;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .manifesto-text p.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .manifesto-text .pull {
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    color: #e8e0d0;
+    font-style: italic;
+    border-left: 2px solid #7ecba1;
+    padding-left: 1.5rem;
+    margin: 3rem 0;
+  }
+
+  .manifesto-text .accent {
+    color: #a78bfa;
+  }
+
+  .manifesto-text .green {
+    color: #7ecba1;
+  }
+
+  /* O MOVIMENTO */
+  .movimento-section {
+    position: relative;
+    z-index: 1;
+    padding: 6rem 2rem;
+    background: linear-gradient(to bottom, transparent, #0d130d, transparent);
+  }
+
+  .movimento-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .movimento-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 3rem;
+  }
+
+  .movimento-card {
+    padding: 2rem;
+    border: 1px solid #1a2e1a;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: #9a9080;
+    transition: background 0.4s, color 0.4s;
+  }
+  .movimento-card:hover {
+    background: #111a11;
+    color: #d0c8b8;
+  }
+  .movimento-card strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: #7ecba1;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 6rem 2rem 4rem;
+    text-align: center;
+    border-top: 1px solid #1a2e1a;
+  }
+
+  .footer-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: #e8e0d0;
+    margin-bottom: 1rem;
+  }
+
+  .footer-sub {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: #4a6b4a;
+    text-transform: uppercase;
+  }
+
+  .footer-invite {
+    margin-top: 2rem;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: #6b5f4f;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+  @keyframes sway {
+    0%, 100% { transform: rotate(var(--r0)); }
+    50% { transform: rotate(var(--r1)); }
+  }
+
+  @media (max-width: 600px) {
+    .movimento-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Atmospheric canopy -->
+<div class="canopy" id="canopy"></div>
+<div class="mist"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">movimento artístico · desterritorializado · rizomático</div>
+  <h1 class="hero-title">Gótico<br>Tropical</h1>
+  <div class="hero-line"></div>
+  <p class="hero-tagline">"A floresta nunca foi o lugar mais assustador.<br>O mais assustador sempre foi o retorno."</p>
+  <div class="scroll-hint">↓ &nbsp; descer &nbsp; ↓</div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto-section">
+  <div class="section-label">Primeiro Manifesto</div>
+  <div class="manifesto-text" id="manifesto">
+
+    <p>Em 1492 havia uma ilha desenhada no Atlântico. Não existia. Em 1519 dois países assinaram um tratado sobre ela.</p>
+
+    <p>Colombo escreveu: cheguei. Estava às portas da Amazônia.</p>
+
+    <p class="pull">Hy-Brasil. Em gaélico. <span class="green">O nome veio antes do lugar.</span></p>
+
+    <p>Depois veio o lugar.<br>Depois vieram os que vieram.<br>Depois aconteceu o que aconteceu.<br>Depois viemos.</p>
+
+    <p>O <span class="accent">Gótico Tropical</span> não é um estado — é um clima.</p>
+
+    <p>Herdamos o Tropicalismo, mas não o festejamos. O habitamos.</p>
+
+    <p class="pull"><span class="green">O Gótico Tropical começa onde o Tropicalismo parou de dançar.</span></p>
+
+    <p>A tristeza é a prova dos nove.<br>E a sobrevivência, o Porto Seguro.</p>
+
+    <p>Emigrei. A ferida colonial não emigrou comigo. Ela já estava lá quando cheguei.</p>
+
+    <p>Cheguei ao mundo que inventou o Brasil — <em>insula perdita</em>.</p>
+
+    <p>Aqui desenharam nos mapas uma ilha abençoada que nunca existiu.<br>A bênção que produziu a ferida.</p>
+
+    <p class="pull" style="border-color:#a78bfa;"><span class="accent">O Gótico Tropical é o clima que viaja no corpo.</span><br>Não o lugar. O corpo.</p>
+
+  </div>
+</section>
+
+<!-- O MOVIMENTO -->
+<section class="movimento-section">
+  <div class="movimento-inner">
+    <div class="section-label">O movimento</div>
+    <div class="movimento-grid">
+      <div class="movimento-card">
+        <strong>Solo, mas aberto</strong>
+        Inicialmente solo. Quem quiser vir, que venha. Não há porta fechada — há floresta.
+      </div>
+      <div class="movimento-card">
+        <strong>Rizomático</strong>
+        No sentido de Deleuze: sem centro, sem origem fixa, sem hierarquia. Cresce por onde encontra terra.
+      </div>
+      <div class="movimento-card">
+        <strong>Desterritorializado</strong>
+        O território não é um lugar. É o corpo que carrega o clima. A ferida que antecede o mapa.
+      </div>
+      <div class="movimento-card">
+        <strong>Cantigas pavorosas</strong>
+        Canta o boi da cara preta. Canta o que assusta. A sobrevivência como forma de arte.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-title">Gótico Tropical</div>
+  <div class="footer-sub">insula perdita · clima no corpo · porto seguro</div>
+  <div class="footer-invite">quem quiser vir, que venha.</div>
+</footer>
+
+<script>
+  // Animated leaf canopy
+  const canopy = document.getElementById('canopy');
+  const leafPaths = [
+    'M0,30 C10,-10 30,-10 40,30 C30,70 10,70 0,30Z',
+    'M0,0 C20,10 20,40 0,50 C-5,30 -5,20 0,0Z',
+    'M5,0 C25,5 30,25 15,40 C5,30 -5,15 5,0Z',
+    'M0,10 C15,-5 35,0 40,15 C35,35 10,40 0,25 C-5,18 -5,12 0,10Z',
+    'M10,0 C30,5 35,30 20,45 C5,40 -5,20 10,0Z',
+  ];
+
+  const colors = ['#1a4d2e','#2d6a4f','#3b1a5a','#6b2d3e','#1a3a1a','#4a1a5a'];
+
+  for (let i = 0; i < 28; i++) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    const size = 40 + Math.random() * 120;
+    svg.setAttribute('viewBox','0 0 45 55');
+    svg.setAttribute('width', size);
+    svg.setAttribute('height', size * 1.2);
+    svg.style.cssText = `
+      position:absolute;
+      left:${Math.random()*105-5}%;
+      top:${Math.random()*120-10}%;
+      --r0:${-15+Math.random()*10}deg;
+      --r1:${5+Math.random()*10}deg;
+      transform:rotate(${-15+Math.random()*30}deg);
+      animation: sway ${4+Math.random()*6}s ease-in-out ${Math.random()*4}s infinite;
+    `;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', leafPaths[Math.floor(Math.random()*leafPaths.length)]);
+    path.setAttribute('fill', colors[Math.floor(Math.random()*colors.length)]);
+    svg.appendChild(path);
+    canopy.appendChild(svg);
+  }
+
+  // Scroll reveal for manifesto paragraphs
+  const paras = document.querySelectorAll('#manifesto p');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.2 });
+  paras.forEach(p => observer.observe(p));
+</script>
+</body>
+</html>
