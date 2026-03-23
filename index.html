@@ -11,7 +11,12 @@
     font-weight: normal;
     font-style: normal;
   }
- 
+  @font-face {
+    font-family: 'SouthernGothic';
+    src: url('https://raw.githubusercontent.com/desimonfer/fontes/main/SouthernGothic.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
   @font-face {
     font-family: 'FreewayGothic';
     src: url('https://raw.githubusercontent.com/desimonfer/fontes/main/freewaygothic.ttf') format('truetype');
@@ -25,7 +30,7 @@
   body {
     background: #0a0f0a;
     color: #e8e0d0;
-    font-family: 'FreewayGothic', sans-serif;
+    font-family: 'Inter', sans-serif;
     overflow-x: hidden;
   }
 
@@ -239,7 +244,7 @@
 
   .footer-invite {
     margin-top: 2rem;
-    font-family: 'FreewayGothic', serif;
+    font-family: 'SouthernGothic', serif;
     font-size: 0.95rem;
     color: #6b5f4f;
   }
@@ -329,39 +334,32 @@
 
 <script>
   const canopy = document.getElementById('canopy');
-  const leafPaths = [
-    'M0,30 C10,-10 30,-10 40,30 C30,70 10,70 0,30Z',
-    'M0,0 C20,10 20,40 0,50 C-5,30 -5,20 0,0Z',
-    'M5,0 C25,5 30,25 15,40 C5,30 -5,15 5,0Z',
-    'M0,10 C15,-5 35,0 40,15 C35,35 10,40 0,25 C-5,18 -5,12 0,10Z',
-    'M10,0 C30,5 35,30 20,45 C5,40 -5,20 10,0Z',
-  ];
-
   const colors = ['#D58800','#FFC900','#FDE130','#F5FD00','#78FE8B','#5E8853','#246C21','#E84F3C','#9AD6F1','#6C2ABD'];
+  const imgUrl = 'https://raw.githubusercontent.com/desimonfer/gotico-tropical/main/Folha_GT.png';
 
   for (let i = 0; i < 42; i++) {
-    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     const color = colors[Math.floor(Math.random() * colors.length)];
-    const isYellow = color === '#F5FD00';
-    const size = isYellow ? 12 + Math.random() * 28 : 40 + Math.random() * 120;
-    svg.setAttribute('viewBox','0 0 45 55');
-    svg.setAttribute('width', size);
-    svg.setAttribute('height', size * 1.2);
-    svg.style.cssText = `
+    const isSmall = color === '#F5FD00';
+    const size = isSmall ? 30 + Math.random() * 40 : 60 + Math.random() * 120;
+    const img = document.createElement('img');
+    img.src = imgUrl;
+    img.style.cssText = `
       position:absolute;
       left:${Math.random() * 110 - 5}%;
       top:${Math.random() * 140 - 5}%;
-      --r0:${-15 + Math.random() * 10}deg;
-      --r1:${5 + Math.random() * 10}deg;
-      transform:rotate(${-15 + Math.random() * 30}deg);
+      width:${size}px;
+      height:${size}px;
+      object-fit:contain;
+      --r0:${-20 + Math.random() * 10}deg;
+      --r1:${5 + Math.random() * 15}deg;
+      transform:rotate(${-20 + Math.random() * 40}deg);
       animation: sway ${4 + Math.random() * 6}s ease-in-out ${Math.random() * 4}s infinite;
-      opacity:${isYellow ? 0.22 : 0.13};
+      opacity:${0.08 + Math.random() * 0.15};
+      mix-blend-mode:screen;
+      filter: hue-rotate(${Math.floor(Math.random()*360)}deg) saturate(1.5);
+      pointer-events:none;
     `;
-    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-    path.setAttribute('d', leafPaths[Math.floor(Math.random() * leafPaths.length)]);
-    path.setAttribute('fill', color);
-    svg.appendChild(path);
-    canopy.appendChild(svg);
+    canopy.appendChild(img);
   }
 
   const paras = document.querySelectorAll('#manifesto p');
