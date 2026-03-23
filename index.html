@@ -11,7 +11,13 @@
     font-weight: normal;
     font-style: normal;
   }
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400&display=swap');
+  @font-face {
+    font-family: 'SouthernGothic';
+    src: url('https://raw.githubusercontent.com/desimonfer/fontes/main/SouthernGothic.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -98,8 +104,8 @@
   }
 
   .hero-tagline {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
+    font-family: 'SouthernGothic', serif;
+    font-style: normal;
     font-size: clamp(1rem, 2.5vw, 1.3rem);
     color: #b8a898;
     max-width: 520px;
@@ -342,7 +348,7 @@
       </div>
       <div class="movimento-card">
         <strong>Rizomático</strong>
-        No sentido de Deleuze: sem centro, sem origem fixa, sem hierarquia. Cresce por onde encontra terra.
+        Sem centro, sem origem fixa, sem hierarquia. Cresce por onde encontra terra.
       </div>
       <div class="movimento-card">
         <strong>Desterritorializado</strong>
@@ -374,26 +380,37 @@
     'M10,0 C30,5 35,30 20,45 C5,40 -5,20 10,0Z',
   ];
 
-  const colors = ['#1a4d2e','#2d6a4f','#3b1a5a','#6b2d3e','#1a3a1a','#4a1a5a'];
+  const colors = ['#D58800','#FFC900','#FDE130','#F5FD00','#78FE8B','#5E8853','#246C21','#E84F3C','#9AD6F1','#6C2ABD'];
 
-  for (let i = 0; i < 28; i++) {
+  for (let i = 0; i < 36; i++) {
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-    const size = 40 + Math.random() * 120;
+    const color = colors[Math.floor(Math.random()*colors.length)];
+    const isYellow = color === '#F5FD00';
+    const size = isYellow
+      ? 15 + Math.random() * 35
+      : 40 + Math.random() * 120;
+    const leftPos = isYellow
+      ? Math.random() * 110 - 5
+      : Math.random() * 105 - 5;
+    const topPos = isYellow
+      ? Math.random() * 130 - 5
+      : Math.random() * 120 - 10;
     svg.setAttribute('viewBox','0 0 45 55');
     svg.setAttribute('width', size);
     svg.setAttribute('height', size * 1.2);
     svg.style.cssText = `
       position:absolute;
-      left:${Math.random()*105-5}%;
-      top:${Math.random()*120-10}%;
+      left:${leftPos}%;
+      top:${topPos}%;
       --r0:${-15+Math.random()*10}deg;
       --r1:${5+Math.random()*10}deg;
       transform:rotate(${-15+Math.random()*30}deg);
       animation: sway ${4+Math.random()*6}s ease-in-out ${Math.random()*4}s infinite;
+      opacity:${isYellow ? 0.18 : 0.13};
     `;
     const path = document.createElementNS('http://www.w3.org/2000/svg','path');
     path.setAttribute('d', leafPaths[Math.floor(Math.random()*leafPaths.length)]);
-    path.setAttribute('fill', colors[Math.floor(Math.random()*colors.length)]);
+    path.setAttribute('fill', color);
     svg.appendChild(path);
     canopy.appendChild(svg);
   }
