@@ -252,6 +252,55 @@ footer {
   color: #6b5f4f;
 }
 
+#keila-form {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+#keila-form input[type="email"] {
+  flex: 1;
+  background: transparent;
+  border: 1px solid rgba(240,236,228,0.15);
+  border-right: none;
+  color: #e8e0d0;
+  font-family: 'FreewayGothic', serif;
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+#keila-form input[type="email"]::placeholder {
+  color: rgba(240,236,228,0.25);
+  letter-spacing: 0.05em;
+}
+
+#keila-form input[type="email"]:focus {
+  border-color: rgba(126,203,161,0.4);
+}
+
+#keila-form button[type="submit"] {
+  background: transparent;
+  border: 1px solid rgba(240,236,228,0.15);
+  color: #7ecba1;
+  font-family: 'Brasilero', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s;
+  white-space: nowrap;
+}
+
+#keila-form button[type="submit"]:hover {
+  background: rgba(126,203,161,0.08);
+  border-color: rgba(126,203,161,0.4);
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
@@ -338,44 +387,42 @@ footer {
   <div class="footer-sub">insula perdita · clima no corpo · porto seguro</div>
   <img src="https://raw.githubusercontent.com/desimonfer/gotico-tropical/main/TropicalGothLogoWhite.svg" alt="Tropical Goth" class="footer-logo">
   <div class="footer-invite">quem quiser vir, que venha.</div>
-  <div class="keila-wrap" style="margin-top: 1.5rem;">
-   <!-- Substitua o <form> atual por este código -->
-<form id="keila-form">
-  <input type="email" name="contact[email]" placeholder="E-mail" required/>
-  <input aria-hidden="true" autocomplete="off" name="h[url]" novalidate="" style="display:none"/>
-  <button type="submit">vamos</button>
-</form>
-
-<script>
-document.getElementById('keila-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const form = e.target;
-  const btn = form.querySelector('button[type="submit"]');
-  
-  // Feedback visual
-  btn.textContent = '...';
-  btn.disabled = true;
-
-  try {
-    const formData = new FormData(form);
-    await fetch('https://keila-production-316e.up.railway.app/forms/nfrm_weLJnLY5', {
-      method: 'POST',
-      body: formData,
-      mode: 'no-cors'
-    });
-    // Redireciona para a página de agradecimento
-    window.location.href = 'https://desimonfer.github.io/gothicus-brasiliensis/vir/';
-  } catch (error) {
-    btn.textContent = 'erro — tente de novo';
-    btn.disabled = false;
-    setTimeout(() => { btn.textContent = 'vamos'; }, 3000);
-  }
-});
-</script>
+  <div class="keila-wrap" style="margin-top:1.5rem;">
+    <form id="keila-form">
+      <input id="contact_email" name="contact[email]" type="email" placeholder="E-mail" required/>
+      <input aria-hidden="true" autocomplete="off" name="h[url]" novalidate="" style="display:none"/>
+      <button type="submit">vamos</button>
+    </form>
   </div>
 </footer>
 
 <script>
+  // Formulário Keila com redirecionamento
+  document.getElementById('keila-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('button[type="submit"]');
+
+    const textoOriginal = btn.textContent;
+    btn.textContent = '...';
+    btn.disabled = true;
+
+    try {
+      const formData = new FormData(form);
+      await fetch('https://keila-production-316e.up.railway.app/forms/nfrm_weLJnLY5', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      });
+      window.location.href = 'https://desimonfer.github.io/gothicus-brasiliensis/vir/';
+    } catch (error) {
+      btn.textContent = 'erro — tente de novo';
+      btn.disabled = false;
+      setTimeout(() => { btn.textContent = textoOriginal; }, 3000);
+    }
+  });
+
+  // Folhas do canopy
   const canopy = document.getElementById('canopy');
   const leafPaths = [
     'M0,30 C10,-10 30,-10 40,30 C30,70 10,70 0,30Z',
@@ -384,7 +431,6 @@ document.getElementById('keila-form').addEventListener('submit', async (e) => {
     'M0,10 C15,-5 35,0 40,15 C35,35 10,40 0,25 C-5,18 -5,12 0,10Z',
     'M10,0 C30,5 35,30 20,45 C5,40 -5,20 10,0Z',
   ];
-
   const colors = ['#D58800','#FFC900','#FDE130','#F5FD00','#78FE8B','#5E8853','#246C21','#E84F3C','#9AD6F1','#6C2ABD'];
 
   for (let i = 0; i < 42; i++) {
@@ -412,6 +458,7 @@ document.getElementById('keila-form').addEventListener('submit', async (e) => {
     canopy.appendChild(svg);
   }
 
+  // Scroll reveal do manifesto
   const paras = document.querySelectorAll('#manifesto p');
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
