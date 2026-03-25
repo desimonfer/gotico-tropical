@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gothicus brasiliensis — vir</title>
+<style>
+  @font-face {
+    font-family: 'Brasilero';
+    src: url('https://raw.githubusercontent.com/desimonfer/fontes/main/Brasilero2018Free.otf') format('opentype');
+  }
+  @font-face {
+    font-family: 'FreewayGothic';
+    src: url('https://raw.githubusercontent.com/desimonfer/fontes/main/freewaygothic.ttf') format('truetype');
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0f0a;
+    color: #e8e0d0;
+    font-family: 'FreewayGothic', serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+
+  .canopy {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .mist {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 50% 30% at 80% 20%, #1a4d2e55 0%, transparent 70%),
+      radial-gradient(ellipse 40% 20% at 10% 70%, #3b1a5a44 0%, transparent 70%),
+      radial-gradient(ellipse 30% 10% at 50% 90%, #7a1e2833 0%, transparent 70%);
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+  }
+
+  .back {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(240,236,228,0.25);
+    text-decoration: none;
+    margin-bottom: 1rem;
+    transition: color 0.3s;
+  }
+  .back:hover { color: #7ecba1; }
+
+  .title {
+    font-family: 'Brasilero', serif;
+    font-size: clamp(2rem, 8vw, 4rem);
+    font-weight: normal;
+    line-height: 1;
+    background: linear-gradient(160deg, #e8e0d0 30%, #7ecba1 60%, #c084fc 90%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-family: 'FreewayGothic', serif;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    color: rgba(240,236,228,0.45);
+    line-height: 1.7;
+  }
+
+  .divider {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, #7ecba1, transparent);
+  }
+
+  form {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  input[type="email"] {
+    flex: 1;
+    background: transparent;
+    border: 1px solid rgba(240,236,228,0.15);
+    border-right: none;
+    color: #e8e0d0;
+    font-family: 'FreewayGothic', serif;
+    font-size: 0.9rem;
+    padding: 0.85rem 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  input[type="email"]::placeholder {
+    color: rgba(240,236,228,0.25);
+    letter-spacing: 0.05em;
+  }
+
+  input[type="email"]:focus {
+    border-color: rgba(126,203,161,0.4);
+  }
+
+  button[type="submit"] {
+    background: transparent;
+    border: 1px solid rgba(240,236,228,0.15);
+    color: #7ecba1;
+    font-family: 'Brasilero', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    padding: 0.85rem 1.5rem;
+    cursor: pointer;
+    transition: background 0.3s, border-color 0.3s;
+    white-space: nowrap;
+  }
+
+  button[type="submit"]:hover {
+    background: rgba(126,203,161,0.08);
+    border-color: rgba(126,203,161,0.4);
+  }
+
+  .fine {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: rgba(240,236,228,0.2);
+  }
+
+  @keyframes sway {
+    0%, 100% { transform: rotate(var(--r0)); }
+    50% { transform: rotate(var(--r1)); }
+  }
+</style>
+</head>
+<body>
+
+<div class="canopy" id="canopy"></div>
+<div class="mist"></div>
+
+<div class="wrap">
+  <a href="../" class="back">← gothicus brasiliensis</a>
+  <div class="title">quem quiser<br>vir, que venha.</div>
+  <div class="subtitle">receba as cantigas.<br>o clima chega por email.</div>
+  <div class="divider"></div>
+  <form action="https://keila-production-316e.up.railway.app/forms/nfrm_weLJnLY5" method="post">
+    <input type="email" name="contact[email]" placeholder="E-mail" required/>
+    <input aria-hidden="true" autocomplete="off" name="h[url]" novalidate="" style="display:none"/>
+    <button type="submit">vamos</button>
+  </form>
+  <div class="fine">gothicus brasiliensis · insula perdita</div>
+</div>
+
+<script>
+  const canopy = document.getElementById('canopy');
+  const leafPaths = [
+    'M0,30 C10,-10 30,-10 40,30 C30,70 10,70 0,30Z',
+    'M0,0 C20,10 20,40 0,50 C-5,30 -5,20 0,0Z',
+    'M5,0 C25,5 30,25 15,40 C5,30 -5,15 5,0Z',
+    'M0,10 C15,-5 35,0 40,15 C35,35 10,40 0,25 C-5,18 -5,12 0,10Z',
+    'M10,0 C30,5 35,30 20,45 C5,40 -5,20 10,0Z',
+  ];
+  const colors = ['#D58800','#FFC900','#FDE130','#F5FD00','#78FE8B','#5E8853','#246C21','#E84F3C','#9AD6F1','#6C2ABD'];
+
+  for (let i = 0; i < 28; i++) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const isYellow = color === '#F5FD00';
+    const size = isYellow ? 12 + Math.random() * 28 : 40 + Math.random() * 100;
+    svg.setAttribute('viewBox','0 0 45 55');
+    svg.setAttribute('width', size);
+    svg.setAttribute('height', size * 1.2);
+    svg.style.cssText = `
+      position:absolute;
+      left:${Math.random() * 110 - 5}%;
+      top:${Math.random() * 110 - 5}%;
+      --r0:${-15 + Math.random() * 10}deg;
+      --r1:${5 + Math.random() * 10}deg;
+      transform:rotate(${-15 + Math.random() * 30}deg);
+      animation: sway ${4 + Math.random() * 6}s ease-in-out ${Math.random() * 4}s infinite;
+      opacity:${isYellow ? 0.22 : 0.13};
+    `;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', leafPaths[Math.floor(Math.random() * leafPaths.length)]);
+    path.setAttribute('fill', color);
+    svg.appendChild(path);
+    canopy.appendChild(svg);
+  }
+</script>
+</body>
+</html>
