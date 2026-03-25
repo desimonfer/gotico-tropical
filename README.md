@@ -1,1 +1,1 @@
-# gotico-tropical
+# goticus-brasiliensis
