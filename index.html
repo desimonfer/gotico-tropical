@@ -338,21 +338,12 @@ footer {
   <div class="footer-sub">insula perdita · clima no corpo · porto seguro</div>
   <img src="https://raw.githubusercontent.com/desimonfer/gotico-tropical/main/TropicalGothLogoWhite.svg" alt="Tropical Goth" class="footer-logo">
   <div class="footer-invite">quem quiser vir, que venha.</div>
-  <div class="keila-wrap">
-    <form action="https://keila-production-316e.up.railway.app/forms/nfrm_weLJnLY5" class="contact-form" method="post">
-      <h1>quem quiser vir, que venha</h1>
-      <div class="flex flex-col">
-        <label for="contact_email">Email</label>
-        <input id="contact_email" name="contact[email]" type="email" placeholder="seu email"/>
-      </div>
+  <div class="keila-wrap" style="margin-top: 1.5rem;">
+    <form action="https://keila-production-316e.up.railway.app/forms/nfrm_weLJnLY5" method="post" style="display:flex;flex-direction:row;align-items:stretch;width:100%;max-width:420px;margin:0 auto;">
+      <input id="contact_email" name="contact[email]" type="email" placeholder="E-mail" style="flex:1;background:transparent;border:1px solid rgba(240,236,228,0.15);border-right:none;color:#e8e0d0;font-family:'FreewayGothic',serif;font-size:0.9rem;padding:0.75rem 1rem;outline:none;"/>
       <input aria-hidden="true" autocomplete="off" name="h[url]" novalidate="" style="display:none"/>
-      <div class="flex flex-col">
-        <div class="h-captcha" data-sitekey="10000000-ffff-ffff-ffff-000000000001" data-theme="dark"></div>
-        <script async defer src="https://hcaptcha.com/1/api.js"></script>
-      </div>
-      <div class="flex justify-start">
-        <button type="submit">vamos</button>
-      </div>
+      <div style="display:none"><div class="h-captcha" data-sitekey="10000000-ffff-ffff-ffff-000000000001" data-theme="dark"></div><script async defer src="https://hcaptcha.com/1/api.js"></script></div>
+      <button type="submit" style="background:transparent;border:1px solid rgba(240,236,228,0.15);color:#7ecba1;font-family:'Brasilero',serif;font-size:0.85rem;letter-spacing:0.2em;padding:0.75rem 1.5rem;cursor:pointer;white-space:nowrap;">vamos</button>
     </form>
   </div>
 </footer>
