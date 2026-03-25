@@ -1,18 +1,204 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bestiário · Gótico Tropical</title>
-  <script src="https://esm.sh/react@18"></script>
-  <script src="https://esm.sh/react-dom@18"></script>
-  <script src="https://esm.sh/@babel/standalone"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bestiário Gothicus brasiliensis · Gótico Tropical</title>
+<style>
+@font-face { font-family: 'Brasilero'; src: url('https://raw.githubusercontent.com/desimonfer/fontes/main/Brasilero2018Free.otf') format('opentype'); }
+@font-face { font-family: 'Freeway Gothic'; src: url('https://raw.githubusercontent.com/desimonfer/fontes/main/freewaygothic.ttf') format('truetype'); }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0908;color:#f0ece4;font-family:'Freeway Gothic','Helvetica Neue',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(240,236,228,0.1);border-radius:2px}
+.brasilero{font-family:'Brasilero',Georgia,serif}
+header{padding:56px 40px 40px;text-align:center;border-bottom:1px solid rgba(240,236,228,0.05)}
+header .sub{font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(240,236,228,0.2);margin-bottom:14px}
+header h1{font-size:clamp(34px,6vw,54px);font-weight:400;letter-spacing:0.06em;line-height:1.1;margin-bottom:8px}
+header h1 span{color:rgba(240,236,228,0.3)}
+header .line{width:40px;height:1px;background:rgba(240,236,228,0.1);margin:16px auto}
+header .desc{font-size:12px;color:rgba(240,236,228,0.25);max-width:500px;margin:0 auto;line-height:1.7;font-style:italic}
+.filters{padding:16px 40px;border-bottom:1px solid rgba(240,236,228,0.03);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.filter-row{display:flex;flex-wrap:wrap;gap:4px}
+.fbtn{background:transparent;border:1px solid rgba(240,236,228,0.03);color:rgba(240,236,228,0.25);padding:4px 10px;border-radius:2px;font-size:10px;cursor:pointer;font-family:inherit;transition:all 0.2s}
+.fbtn.active{background:rgba(240,236,228,0.06);border-color:rgba(240,236,228,0.1);color:#f0ece4}
+.fbtn[data-color]:hover,.fbtn[data-color].active{color:var(--fc)}
+#search{background:rgba(240,236,228,0.03);border:1px solid rgba(240,236,228,0.04);color:#f0ece4;padding:5px 12px;border-radius:2px;font-size:11px;width:140px;font-family:inherit;outline:none}
+.stats{padding:10px 40px;display:flex;gap:24px;border-bottom:1px solid rgba(240,236,228,0.03);font-size:9px;color:rgba(240,236,228,0.2)}
+.stats strong{color:rgba(240,236,228,0.45)}.stats .danger{color:#e74c3c}
+.grid{padding:24px 40px 50px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{border-radius:2px;padding:22px 20px;cursor:pointer;transition:all 0.3s cubic-bezier(0.22,1,0.36,1);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,0.04)}
+.card:hover{transform:translateY(-3px)}.card:hover .topline{opacity:1}
+.card:hover{border-color:var(--ac,rgba(255,255,255,0.15))}
+.topline{position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.3s}
+.card .sym{position:absolute;top:12px;right:16px;font-size:26px;opacity:0.1;filter:grayscale(100%)}
+.card .cat{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:7px}
+.card h3{font-size:21px;font-weight:400;color:#f0ece4;margin-bottom:3px;line-height:1.15}
+.card .sub{font-size:11px;color:rgba(240,236,228,0.4);margin-bottom:12px;font-style:italic}
+.card .bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:center}
+.card .region{font-size:9px;color:rgba(240,236,228,0.25)}
+.tag{font-size:8px;padding:2px 6px;border-radius:2px;letter-spacing:0.04em;margin-left:6px}
+.pips{display:flex;gap:3px}
+.pip{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.08)}
+.pip.on{background:#e74c3c;box-shadow:0 0 5px #e74c3c}
+.overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0);display:none;align-items:center;justify-content:center;padding:20px;transition:background 0.3s}
+.overlay.open{display:flex;background:rgba(0,0,0,0.85)}
+.modal{background:#0e0c0a;border-radius:3px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto;transform:translateY(30px) scale(0.97);opacity:0;transition:all 0.4s cubic-bezier(0.22,1,0.36,1);position:relative}
+.overlay.open .modal{transform:translateY(0) scale(1);opacity:1}
+.modal .bar{height:3px}
+.modal .inner{padding:28px 32px}
+.modal .close{position:absolute;top:12px;right:16px;background:none;border:none;color:rgba(240,236,228,0.4);font-size:20px;cursor:pointer}
+.modal .center{text-align:center;margin-bottom:24px}
+.modal .msym{font-size:40px;margin-bottom:8px;filter:grayscale(50%)}
+.modal .mcat{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:5px}
+.modal h2{font-size:32px;font-weight:400;color:#f0ece4;margin-bottom:3px}
+.modal .msub{font-style:italic;color:rgba(240,236,228,0.4);font-size:14px}
+.modal .meta{display:flex;justify-content:center;gap:24px;padding:12px 0;border-top:1px solid rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.04);margin-bottom:24px}
+.modal .mlabel{font-size:9px;color:rgba(240,236,228,0.25);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:3px}
+.modal .morigin{font-size:11px;color:#f0ece4}
+.modal .section{margin-bottom:20px}
+.modal .slabel{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:7px}
+.modal .stext{font-size:14px;line-height:1.7;color:rgba(240,236,228,0.65)}
+.modal .speech{margin:0 0 20px;padding:16px 20px;border-left:2px solid;background:rgba(255,255,255,0.015)}
+.modal .speech p{font-size:15px;font-style:italic;line-height:1.7;color:rgba(240,236,228,0.75);white-space:pre-line;margin-bottom:8px}
+.modal .speech .who{font-size:11px;color:rgba(240,236,228,0.35)}
+.modal .protect{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:2px;padding:12px 16px;margin-bottom:20px}
+.modal .protect .slabel{color:#e74c3c}
+.modal .protect .stext{font-size:13px;color:rgba(240,236,228,0.5)}
+.modal .source{border-top:1px solid rgba(255,255,255,0.04);padding-top:12px;font-size:11px;color:rgba(240,236,228,0.3)}
+.modal .source a{text-decoration:none}
+.refs{border-top:1px solid rgba(240,236,228,0.04);padding:28px 40px}
+.refs .title{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(240,236,228,0.2);margin-bottom:16px}
+.refs .grid{padding:0;gap:14px}
+.refcard{background:rgba(255,255,255,0.012);border:1px solid rgba(255,255,255,0.03);border-radius:2px;padding:16px 18px;border-left:2px solid}
+.refcard .name{font-size:14px;color:#f0ece4;font-weight:400;margin-bottom:5px}
+.refcard .desc{font-size:11px;color:rgba(240,236,228,0.35);line-height:1.5;margin-bottom:6px}
+.refcard .book{font-size:10px;color:rgba(240,236,228,0.45);font-style:italic;margin-bottom:5px}
+.refcard a{font-size:10px;text-decoration:none}
+.footer-links{margin-top:16px;font-size:10px;color:rgba(240,236,228,0.15);line-height:1.6}
+.footer-links a{color:rgba(240,236,228,0.3);text-decoration:none}
+.back{display:block;text-align:center;padding:32px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;border-top:1px solid rgba(240,236,228,0.04)}
+.back a{color:rgba(240,236,228,0.25);text-decoration:none}
+.empty{grid-column:1/-1;text-align:center;padding:40px;color:rgba(240,236,228,0.2);font-style:italic}
+@media(max-width:600px){header,.filters,.stats,.grid,.refs{padding-left:20px;padding-right:20px}.modal .inner{padding:20px}}
+</style>
 </head>
-<body style="margin:0; background:#0a0908;">
-  <div id="root"></div>
-  <script type="text/babel" data-type="module">
-    // Cole aqui o conteúdo do bestiario_brasileiro.jsx
-    // OU use um bundler (Vite, esbuild) para compilar
-  </script>
+<body>
+
+<header>
+  <div class="sub">compêndio de criaturas aterradoras · gótico tropical</div>
+  <h1 class="brasilero">Bestiário Gothicus <span>brasiliensis</span></h1>
+  <div class="line"></div>
+  <p class="desc">Do Anhangá dos tupis à Cobra-Grande que trouxe a noite ao mundo, da Mãe de Ouro iorubana ao Jabuti vingador — monstros, visagens e encantamentos</p>
+</header>
+
+<div class="filters">
+  <div class="filter-row" id="catFilters"></div>
+  <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+    <div class="filter-row" id="srcFilters"></div>
+    <input type="text" id="search" placeholder="Buscar...">
+  </div>
+</div>
+
+<div class="stats">
+  <span>Criaturas: <strong id="countDisplay">62</strong></span>
+  <span>Fontes: <strong>9 obras, 4 autores</strong></span>
+  <span>Perigo médio: <strong class="danger" id="dangerDisplay">3.2</strong></span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="overlay" id="overlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="bar" id="modalBar"></div>
+    <div class="inner" id="modalContent"></div>
+  </div>
+</div>
+
+<div class="refs">
+  <div class="title">Referências bibliográficas</div>
+  <div class="grid" id="refsGrid"></div>
+  <div class="footer-links">
+    Editoras: <a href="https://faroeditorial.com.br">faroeditorial.com.br</a> · <a href="https://bazardotempo.com.br">bazardotempo.com.br</a> · <a href="https://mcc.ufrn.br">mcc.ufrn.br</a> · <a href="https://joaosimoeslopesneto.com.br">joaosimoeslopesneto.com.br</a>
+    <br>Tradição do bestiário medieval — do <em>Physiologus</em> grego ao imaginário fantástico brasileiro
+  </div>
+</div>
+
+<div class="back"><a href="../">← voltar ao manifesto</a></div>
+
+<script>
+// DATA IS LOADED FROM SEPARATE FILE OR INLINE BELOW
+</script>
+<script src="data.js"></script>
+<script>
+// If data.js fails (not found), creatures/sources/speeches should already be defined above
+if(typeof creatures==='undefined') console.error('data.js not loaded — paste creature data inline');
+
+const categories=[...new Set(creatures.map(c=>c.category))];
+let currentCat='Todos',currentSrc='Todos',currentQ='';
+
+const srcColors={simas:'#e85d26',ruth_negros:'#1abc9c',ruth_indios:'#1abc9c',ruth_encantamento:'#1abc9c',ambos:'#e67e22',folclore:'#f1c40f',lopes_neto:'#e74c3c'};
+const srcLabels={Simas:'#e85d26','Ruth Guimarães':'#1abc9c','Câmara Cascudo':'#f1c40f','Simões Lopes Neto':'#e74c3c'};
+
+function getAuthorLabel(src){const s=sources[src];if(!s)return'';return s.author.split(' ').slice(-1)[0]}
+function getSrcColor(src){return srcColors[src]||'#888'}
+function pips(n){return Array.from({length:5},(_,i)=>`<div class="pip${i<n?' on':''}"></div>`).join('')}
+
+function renderCards(){
+  const filtered=creatures.filter(c=>{
+    if(currentCat!=='Todos'&&c.category!==currentCat)return false;
+    if(currentSrc==='Simas'&&c.source!=='simas'&&c.source!=='ambos')return false;
+    if(currentSrc==='Ruth Guimarães'&&!c.source.startsWith('ruth')&&c.source!=='ambos')return false;
+    if(currentSrc==='Câmara Cascudo'&&c.source!=='folclore')return false;
+    if(currentSrc==='Simões Lopes Neto'&&c.source!=='lopes_neto')return false;
+    if(currentQ&&!c.name.toLowerCase().includes(currentQ)&&!c.subtitle.toLowerCase().includes(currentQ))return false;
+    return true;
+  });
+  const grid=document.getElementById('grid');
+  if(!filtered.length){grid.innerHTML='<div class="empty">Nenhuma criatura encontrada nas trevas...</div>';document.getElementById('countDisplay').textContent='0';document.getElementById('dangerDisplay').textContent='—';return}
+  document.getElementById('countDisplay').textContent=filtered.length;
+  document.getElementById('dangerDisplay').textContent=(filtered.reduce((a,c)=>a+c.danger,0)/filtered.length).toFixed(1);
+  grid.innerHTML=filtered.map(c=>{
+    const ac=c.colors.accent;const sc=getSrcColor(c.source);const al=getAuthorLabel(c.source);
+    return`<div class="card" style="background:${c.colors.bg};--ac:${ac}55" onclick='openModal(${JSON.stringify(c.name).replace(/'/g,"\\'")})'><div class="topline" style="background:${ac}"></div><div class="sym">${c.symbol}</div><div class="cat" style="color:${ac}">${c.category}</div><h3 class="brasilero">${c.name}</h3><div class="sub">${c.subtitle}</div><div class="bottom"><div style="display:flex;gap:6px;align-items:center"><span class="region">${c.region}</span><span class="tag" style="background:${sc}18;color:${sc}">${al}</span></div><div class="pips">${pips(c.danger)}</div></div></div>`
+  }).join('');
+}
+
+function openModal(name){
+  const c=creatures.find(x=>x.name===name);if(!c)return;
+  const s=sources[c.source]||{};const sp=speeches[c.name];
+  const ac=c.colors.accent;
+  document.getElementById('modalBar').style.background=`linear-gradient(90deg,transparent,${ac},transparent)`;
+  let html=`<button class="close" onclick="closeModal()">×</button><div class="center"><div class="msym">${c.symbol}</div><div class="mcat" style="color:${ac}">${c.category} · ${c.region}</div><h2 class="brasilero">${c.name}</h2><div class="msub">${c.subtitle}</div></div><div class="meta"><div style="text-align:center"><div class="mlabel">Perigo</div><div class="pips" style="justify-content:center">${pips(c.danger)}</div></div><div style="text-align:center"><div class="mlabel">Origem</div><div class="morigin">${c.origin}</div></div></div>`;
+  html+=`<div class="section"><div class="slabel" style="color:${ac}">Descrição</div><div class="stext">${c.description}</div></div>`;
+  html+=`<div class="section"><div class="slabel" style="color:${ac}">Comportamento</div><div class="stext">${c.behavior}</div></div>`;
+  if(sp)html+=`<div class="speech" style="border-color:${ac}44"><p>${sp.text}</p><div class="who">— ${sp.who}</div></div>`;
+  html+=`<div class="protect"><div class="slabel">Como se proteger</div><div class="stext">${c.weakness}</div></div>`;
+  if(s.author)html+=`<div class="source"><em>Fonte: </em><span style="color:rgba(240,236,228,0.45)">${s.author}, <em>${s.book}</em>${s.year?' ('+s.year+')':''}${s.pub?'. '+s.pub:''}</span>${s.site?' — <a href="https://'+s.site+'" style="color:'+ac+'">'+s.site+'</a>':''}</div>`;
+  document.getElementById('modalContent').innerHTML=html;
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+function initFilters(){
+  const cf=document.getElementById('catFilters');
+  ['Todos',...categories].forEach(c=>{const b=document.createElement('button');b.className='fbtn'+(currentCat===c?' active':'');b.textContent=c;b.onclick=()=>{currentCat=c;document.querySelectorAll('#catFilters .fbtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderCards()};cf.appendChild(b)});
+  const sf=document.getElementById('srcFilters');
+  ['Todos','Simas','Ruth Guimarães','Câmara Cascudo','Simões Lopes Neto'].forEach(s=>{const b=document.createElement('button');b.className='fbtn'+(currentSrc===s?' active':'');b.textContent=s;const col=srcLabels[s]||'#f0ece4';b.style.setProperty('--fc',col);b.setAttribute('data-color','1');b.onclick=()=>{currentSrc=s;document.querySelectorAll('#srcFilters .fbtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderCards()};sf.appendChild(b)});
+  document.getElementById('search').addEventListener('input',e=>{currentQ=e.target.value.toLowerCase();renderCards()});
+}
+
+function initRefs(){
+  const refs=[
+    {c:'#e85d26',n:'Luiz Antonio Simas',d:'Historiador, escritor e compositor carioca. Mestre em História pela UFRJ. Mais de 30 livros. Prêmio Jabuti.',b:'Bestiário Brasileiro (Bazar do Tempo, 2024)',s:'luizantoniosimas.com.br'},
+    {c:'#1abc9c',n:'Ruth Guimarães (1920–2014)',d:'Primeira escritora negra a ganhar projeção nacional. Discípula de Mário de Andrade. Academia Paulista de Letras.',b:'Contos Negros · Contos Índios · Contos do Céu e da Terra · Contos de Encantamento (Faro Editorial)',s:'institutoruthguimaraes.org.br'},
+    {c:'#f1c40f',n:'Luís da Câmara Cascudo (1898–1986)',d:'O maior folclorista brasileiro. Fundou a Sociedade Brasileira de Folclore (1941). Autor do Dicionário do Folclore Brasileiro.',b:'Dicionário do Folclore Brasileiro · Antologia do Folclore vols. I e II (Global Editora)',s:'mcc.ufrn.br'},
+    {c:'#e74c3c',n:'Simões Lopes Neto (1865–1916)',d:'O maior escritor gaúcho. Contista, poeta e folclorista pelotense. Lendas do Sul (1913).',b:'Contos Gauchescos e Lendas do Sul (L&PM Editores, ed. anotada 2013)',s:'joaosimoeslopesneto.com.br'}
+  ];
+  document.getElementById('refsGrid').innerHTML=refs.map(r=>`<div class="refcard" style="border-left-color:${r.c}"><div class="name brasilero">${r.n}</div><div class="desc">${r.d}</div><div class="book">${r.b}</div><a href="https://${r.s}" style="color:${r.c}">${r.s}</a></div>`).join('');
+}
+
+initFilters();initRefs();renderCards();
+</script>
 </body>
 </html>
