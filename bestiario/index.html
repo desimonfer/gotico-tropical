@@ -125,13 +125,18 @@ header .desc{font-size:12px;color:rgba(240,236,228,0.25);max-width:500px;margin:
 
 <div class="back"><a href="https://desimonfer.github.io/gothicus-brasiliensis/">← voltar ao manifesto</a></div>
 
+<div id="navChoice" style="display:none;opacity:0;position:fixed;inset:0;z-index:2000;background:rgba(10,9,8,0.92);align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity 0.3s;padding:20px">
+  <div style="font-size:11px;color:rgba(240,236,228,0.25);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px">para onde ir?</div>
+  <a href="../mapa/" id="navBack" style="display:block;padding:16px 32px;border:1px solid rgba(240,236,228,0.08);border-radius:2px;color:#f0ece4;text-decoration:none;font-size:14px;text-align:center;min-width:280px;transition:border-color 0.15s" onmouseover="this.style.borderColor='#e85d26'" onmouseout="this.style.borderColor='rgba(240,236,228,0.08)'">← voltar ao mapa</a>
+  <div id="navCreatures" style="display:flex;flex-direction:column;gap:8px;max-height:40vh;overflow-y:auto;width:100%;max-width:320px"></div>
+</div>
+
 <script>
-// DATA IS LOADED FROM SEPARATE FILE OR INLINE BELOW
+// Data loaded from external file
 </script>
 <script src="data.js"></script>
 <script>
-// If data.js fails (not found), creatures/sources/speeches should already be defined above
-if(typeof creatures==='undefined') console.error('data.js not loaded — paste creature data inline');
+
 
 const categories=[...new Set(creatures.map(c=>c.category))];
 let currentCat='Todos',currentSrc='Todos',currentQ='';
@@ -177,7 +182,37 @@ function openModal(name){
   document.getElementById('modalContent').innerHTML=html;
   document.getElementById('overlay').classList.add('open');
 }
-function closeModal(){document.getElementById('overlay').classList.remove('open')}
+// Track mapa origin
+const urlParams=new URLSearchParams(window.location.search);
+const cameFromMapa=urlParams.has('criatura');
+const mapaEstado=urlParams.get('estado');
+const mapaCriatura=urlParams.get('criatura');
+
+// State-creature mapping (same as mapa)
+const stateCreatures={AC:["Boitatá","Mapinguari"],AL:["Boitatá","João Galafuz","Mulher da Capa Preta","Pai-do-Mato"],AM:["Anhangá","Boitatá","Boto","Cobra-Grande","Curupira","Jabuti","Jurupari","Mapinguari","Matinta Perera","Uiara","Urutau"],AP:["Anhangá","Boitatá","Boto","Cobra-Grande","Curupira","Jabuti"],BA:["Boitatá","Branca-Flor","Caboclo-d'Água","Diabo","Ipupiara","Lobisomem","Mãe-d'água","Minhocão","Moura-Torta","Papa-Figo","Quibungo","Romãozinho","Tutu-Marambá","Uiara"],CE:["Boitatá","Comadre Fulozinha","Labatut","Papa-Figo"],DF:["Boitatá"],ES:["Boitatá"],GO:["Boitatá","Corpo-Seco","Mula sem Cabeça","Romãozinho","Saci-Pererê"],MA:["Ana Jansen","Boitatá","Capelobo","Cazumbá","Cumacanga","Curupira","Diabo","Dom Sebastião","Lobisomem","Romãozinho","Serpente de São Luís"],MG:["Boitatá","Branca-Flor","Caboclo-d'Água","Caipora","Chibamba","Corpo-Seco","Curupira","Lobisomem","Loira do Banheiro","Mãe-d'água","Minhocão","Moura-Torta","Mula sem Cabeça","Negro d'Água","Onça Cabocla","Onça-Borges","Pisadeira","Saci-Pererê","Tutu-Marambá","Uiara","Urutau"],MS:["Boitatá","Come-Língua","Jaci Jaterê","Mula sem Cabeça","Negro d'Água","Pé-de-Garrafa","Saci-Pererê"],MT:["Boitatá","Curupira","Mãe de Ouro","Minhocão","Mula sem Cabeça"],PA:["Anhangá","Boitatá","Boto","Capelobo","Cobra-Grande","Cumacanga","Curupira","Homem-Estrela","Jabuti","Jurupari","Matinta Perera","Uiara","Urutau"],PB:["Boitatá","Comadre Fulozinha","Papa-Figo"],PE:["Alamoa","Boitatá","Comadre Fulozinha","Galega do Cemitério","João Galafuz","Pai-do-Mato","Papa-Figo"],PI:["Boitatá","Crispim","Vareiro Encantado"],PR:["Boitatá","Corpo-Seco","Jaci Jaterê","Lobisomem","Mula sem Cabeça","Saci-Pererê"],RJ:["Boitatá","Caipora","Ipupiara","Loira do Banheiro","Saci-Pererê","Tutu-Marambá"],RN:["Boitatá","Comadre Fulozinha","Labatut"],RO:["Boitatá"],RR:["Boitatá"],RS:["Boitatá","Jaci Jaterê","Lobisomem","Negrinho do Pastoreio","Saci-Pererê","Teiniaguá"],SC:["Boitatá","Bradador","Jaci Jaterê","Lobisomem","Saci-Pererê"],SE:["Boitatá","João Galafuz"],SP:["Bebê Diabo","Boitatá","Bradador","Branca-Flor","Caipora","Chibamba","Corpo-Seco","Curupira","Diabo","Homem-Estrela","Ipupiara","Lobisomem","Loira do Banheiro","Macaco Serafim","Mãe de Ouro","Mãe-d'água","Moura-Torta","Mula sem Cabeça","Pacuera-cuera","Pinto Sura","Pisadeira","Princesa Sapa","Saci-Pererê","Sargento de Pau","Tutu-Marambá","Urutau"],TO:["Boitatá"]};
+const stateNames={AC:"Acre",AL:"Alagoas",AM:"Amazonas",AP:"Amapá",BA:"Bahia",CE:"Ceará",DF:"Distrito Federal",ES:"Espírito Santo",GO:"Goiás",MA:"Maranhão",MG:"Minas Gerais",MS:"Mato Grosso do Sul",MT:"Mato Grosso",PA:"Pará",PB:"Paraíba",PE:"Pernambuco",PI:"Piauí",PR:"Paraná",RJ:"Rio de Janeiro",RN:"Rio Grande do Norte",RO:"Rondônia",RR:"Roraima",RS:"Rio Grande do Sul",SC:"Santa Catarina",SE:"Sergipe",SP:"São Paulo",TO:"Tocantins"};
+
+function closeModal(){
+  document.getElementById('overlay').classList.remove('open');
+  if(!cameFromMapa) return;
+  setTimeout(()=>{
+    // Build nav with other creatures from the same state
+    const others=(stateCreatures[mapaEstado]||[]).filter(n=>n!==mapaCriatura);
+    const stateName=stateNames[mapaEstado]||mapaEstado;
+    const nc=document.getElementById('navCreatures');
+    let h='';
+    if(others.length){
+      h+='<div style="font-size:10px;color:rgba(240,236,228,0.2);letter-spacing:0.15em;text-transform:uppercase;text-align:center;margin-top:8px">outras criaturas de '+stateName+'</div>';
+      others.forEach(n=>{
+        h+='<a href="?criatura='+encodeURIComponent(n)+'&estado='+mapaEstado+'" style="display:block;padding:12px 20px;border:1px solid rgba(240,236,228,0.06);border-radius:2px;color:#f0ece4;text-decoration:none;font-size:13px;transition:border-color 0.15s" onmouseover="this.style.borderColor=\'rgba(240,236,228,0.2)\'" onmouseout="this.style.borderColor=\'rgba(240,236,228,0.06)\'">'+n+'</a>';
+      });
+    }
+    nc.innerHTML=h;
+    const nav=document.getElementById('navChoice');
+    nav.style.display='flex';
+    setTimeout(()=>nav.style.opacity='1',20);
+  },350);
+}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 
 function initFilters(){
@@ -201,9 +236,7 @@ function initRefs(){
 initFilters();initRefs();renderCards();
 
 // Auto-open creature modal if ?criatura= parameter is present (from mapa link)
-const urlParams=new URLSearchParams(window.location.search);
-const criatura=urlParams.get('criatura');
-if(criatura){const c=creatures.find(x=>x.name===criatura);if(c)openModal(c.name)}
+if(mapaCriatura){const c=creatures.find(x=>x.name===mapaCriatura);if(c)openModal(c.name)}
 </script>
 </body>
 </html>
