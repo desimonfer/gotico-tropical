@@ -113,22 +113,29 @@ document.querySelectorAll('#brazil path').forEach(p=>{
 
 // Click handler — pure DOM, no shadow DOM, instant
 let activeEl=null;
-document.getElementById('brazil').addEventListener('click',e=>{
-  const p=e.target.closest('path');
-  if(!p||!p.id) return;
-  const id=p.id.replace('BR-','');
-  if(!S[id]) return;
+function selectState(id){
+  const p=document.getElementById('BR-'+id);
+  if(!p||!S[id]) return;
   if(activeEl) activeEl.classList.remove('on');
   activeEl=p;
   p.classList.add('on');
-  // Render panel
   const creatures=S[id];const name=N[id]||id;
   let h='<div class="panel-header"><div class="state-name brasilero">'+name+'</div><div class="state-count">'+creatures.length+' criatura'+(creatures.length!==1?'s':'')+'</div></div>';
   creatures.forEach(n=>{const cat=C[n]||'';const cc=CC[cat]||'#888';
-    h+='<div class="ci" onclick="window.location.href=\'../bestiario/?criatura='+encodeURIComponent(n)+'\'"><div class="n brasilero">'+n+'</div><div class="c" style="background:'+cc+'18;color:'+cc+'">'+cat+'</div><div class="d">'+pips(D[n]||0)+'</div></div>';
+    h+='<div class="ci" onclick="window.location.href=\'../bestiario/?criatura='+encodeURIComponent(n)+'&estado='+id+'\'"><div class="n brasilero">'+n+'</div><div class="c" style="background:'+cc+'18;color:'+cc+'">'+cat+'</div><div class="d">'+pips(D[n]||0)+'</div></div>';
   });
   document.getElementById('panel').innerHTML=h;
+}
+
+document.getElementById('brazil').addEventListener('click',e=>{
+  const p=e.target.closest('path');
+  if(!p||!p.id) return;
+  selectState(p.id.replace('BR-',''));
 });
+
+// Auto-select state if ?estado= parameter is present (returning from bestiario)
+const returnEstado=new URLSearchParams(window.location.search).get('estado');
+if(returnEstado) selectState(returnEstado);
 </script>
 </body>
 </html>
