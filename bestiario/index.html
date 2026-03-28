@@ -123,7 +123,7 @@ header .desc{font-size:12px;color:rgba(240,236,228,0.25);max-width:500px;margin:
   </div>
 </div>
 
-<div class="back"><a href="../">← voltar ao manifesto</a></div>
+<div class="back"><a href="https://desimonfer.github.io/gothicus-brasiliensis/">← voltar ao manifesto</a></div>
 
 <script>
 // DATA IS LOADED FROM SEPARATE FILE OR INLINE BELOW
@@ -199,6 +199,11 @@ function initRefs(){
 }
 
 initFilters();initRefs();renderCards();
+
+// Auto-open creature modal if ?criatura= parameter is present (from mapa link)
+const urlParams=new URLSearchParams(window.location.search);
+const criatura=urlParams.get('criatura');
+if(criatura){const c=creatures.find(x=>x.name===criatura);if(c)openModal(c.name)}
 </script>
 </body>
 </html>
