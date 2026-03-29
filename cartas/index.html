@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cartas · Bestiário Gothicus brasiliensis</title>
+<style>
+@font-face{font-family:'Brasilero';src:url('https://raw.githubusercontent.com/desimonfer/fontes/main/Brasilero2018Free.otf') format('opentype')}
+@font-face{font-family:'Freeway Gothic';src:url('https://raw.githubusercontent.com/desimonfer/fontes/main/freewaygothic.ttf') format('truetype')}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0908;color:#f0ece4;font-family:'Freeway Gothic','Helvetica Neue',sans-serif;min-height:100vh;overflow-x:hidden;display:flex;flex-direction:column;align-items:center}
+.brasilero{font-family:'Brasilero',Georgia,serif}
+
+/* CARD */
+.card-container{perspective:800px;width:280px;height:420px;cursor:pointer;margin:40px auto}
+.card-inner{width:100%;height:100%;position:relative;transition:transform 0.8s cubic-bezier(0.4,0,0.2,1);transform-style:preserve-3d}
+.card-container.flipped .card-inner{transform:rotateY(180deg)}
+.card-front,.card-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;overflow:hidden}
+.card-back{transform:rotateY(180deg)}
+
+/* CARD FRONT (face down) */
+.card-front{
+  background:#0e0c0a;
+  border:1px solid rgba(240,236,228,0.08);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  background-image:
+    repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(240,236,228,0.008) 20px,rgba(240,236,228,0.008) 21px),
+    repeating-linear-gradient(-45deg,transparent,transparent 20px,rgba(240,236,228,0.008) 20px,rgba(240,236,228,0.008) 21px);
+}
+.card-front::before{
+  content:'';position:absolute;inset:8px;border:1px solid rgba(240,236,228,0.04);border-radius:4px;
+}
+.card-front .logo{font-size:14px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(240,236,228,0.08);writing-mode:vertical-rl;text-orientation:mixed}
+.card-front .sigil{font-size:60px;opacity:0.06;filter:grayscale(100%);position:absolute}
+
+/* CARD BACK (face up - creature revealed) */
+.card-back{
+  background:#0e0c0a;
+  border:1px solid rgba(240,236,228,0.1);
+  display:flex;flex-direction:column;
+}
+.card-accent{height:3px;flex-shrink:0}
+.card-border{position:absolute;inset:6px;border:1px solid rgba(240,236,228,0.04);border-radius:4px;pointer-events:none;z-index:1}
+.card-symbol{font-size:64px;text-align:center;padding:24px 0 8px;filter:grayscale(40%)}
+.card-category{text-align:center;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;padding:0 0 10px}
+.card-name{text-align:center;font-size:24px;font-weight:400;padding:0 16px 2px;line-height:1.1}
+.card-subtitle{text-align:center;font-size:10px;font-style:italic;color:rgba(240,236,228,0.35);padding:0 16px 16px}
+.card-divider{width:40px;height:1px;margin:0 auto 14px;opacity:0.15}
+.card-desc{font-size:10px;line-height:1.6;color:rgba(240,236,228,0.5);padding:0 20px;flex:1;overflow:hidden}
+.card-speech{font-size:10px;font-style:italic;color:rgba(240,236,228,0.6);padding:8px 20px;border-top:1px solid rgba(240,236,228,0.03);margin-top:auto;line-height:1.5;white-space:pre-line;max-height:60px;overflow:hidden}
+.card-stats{display:flex;justify-content:space-between;align-items:center;padding:10px 20px 14px;border-top:1px solid rgba(240,236,228,0.04)}
+.card-stats .region{font-size:8px;color:rgba(240,236,228,0.25);max-width:120px}
+.card-stats .danger{display:flex;gap:3px}
+.card-stats .pip{width:8px;height:8px;border-radius:50%;border:1px solid rgba(240,236,228,0.1)}
+.card-stats .pip.on{border-color:currentColor;background:currentColor;box-shadow:0 0 6px currentColor}
+
+/* CONTROLS */
+.controls{display:flex;gap:12px;margin:0 auto 30px;flex-wrap:wrap;justify-content:center}
+.btn{
+  background:transparent;border:1px solid rgba(240,236,228,0.08);color:rgba(240,236,228,0.4);
+  padding:10px 24px;border-radius:2px;font-size:11px;cursor:pointer;font-family:inherit;
+  letter-spacing:0.1em;text-transform:uppercase;transition:all 0.2s;
+}
+.btn:hover{border-color:rgba(240,236,228,0.2);color:#f0ece4}
+.btn.primary{border-color:#e85d26;color:#e85d26}
+.btn.primary:hover{background:rgba(228,93,38,0.1)}
+
+/* HEADER */
+.header{text-align:center;padding:40px 20px 10px}
+.header .sub{font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(240,236,228,0.15);margin-bottom:8px}
+.header h1{font-size:28px;font-weight:400;letter-spacing:0.06em;margin-bottom:4px}
+.header h1 span{color:rgba(240,236,228,0.3)}
+.header .desc{font-size:11px;color:rgba(240,236,228,0.2);margin-top:8px;font-style:italic}
+
+/* COLLECTION */
+.collection{display:none;width:100%;max-width:1200px;padding:20px;flex-wrap:wrap;gap:16px;justify-content:center}
+.collection.show{display:flex}
+.mini-card{
+  width:140px;height:210px;border-radius:6px;border:1px solid rgba(240,236,228,0.06);
+  background:#0e0c0a;cursor:pointer;transition:all 0.2s;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;padding:12px 8px 8px;
+}
+.mini-card:hover{border-color:rgba(240,236,228,0.15);transform:translateY(-3px)}
+.mini-card .sym{font-size:28px;filter:grayscale(40%);margin-bottom:6px}
+.mini-card .nm{font-size:11px;text-align:center;color:#f0ece4;margin-bottom:2px}
+.mini-card .ct{font-size:7px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 5px;border-radius:2px;margin-bottom:auto}
+.mini-card .dng{display:flex;gap:2px;margin-top:6px}
+.mini-card .dng .p{width:5px;height:5px;border-radius:50%;background:rgba(240,236,228,0.08)}
+.mini-card .dng .p.on{background:#e74c3c;box-shadow:0 0 3px #e74c3c}
+
+/* NAV */
+.nav{display:flex;justify-content:center;gap:20px;padding:20px;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;width:100%}
+.nav a{color:rgba(240,236,228,0.2);text-decoration:none;transition:color 0.15s}
+.nav a:hover{color:#f0ece4}
+
+/* ANIM */
+@keyframes glow{0%,100%{opacity:0.3}50%{opacity:0.7}}
+.card-front .pulse{animation:glow 3s ease-in-out infinite}
+
+@media(max-width:400px){.card-container{width:260px;height:390px}.card-name{font-size:20px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="sub">oráculo das criaturas</div>
+  <h1 class="brasilero">Cartas do Bestiário <span>Gothicus</span></h1>
+  <p class="desc">Toque na carta para revelar a criatura</p>
+</div>
+
+<div class="card-container" id="cardContainer" onclick="flipCard()">
+  <div class="card-inner" id="cardInner">
+    <div class="card-front">
+      <div class="sigil">🌿</div>
+      <div class="logo pulse">Bestiário</div>
+    </div>
+    <div class="card-back" id="cardBack">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="btn primary" onclick="drawCard()">sortear criatura</button>
+  <button class="btn" onclick="toggleCollection()">ver todas as cartas</button>
+</div>
+
+<div class="collection" id="collection"></div>
+
+<div class="nav">
+  <a href="../bestiario/">bestiário</a>
+  <a href="../mapa/">mapa</a>
+  <a href="../">manifesto</a>
+</div>
+
+<script src="../bestiario/data.js"></script>
+<script>
+const catColors={Encantada:'#d4a017',Fantasma:'#7f8c8d',Protetor:'#27ae60',Protetora:'#27ae60',Predador:'#e74c3c','Morto-vivo':'#8b7355',Amaldiçoado:'#6c3483',Feiticeira:'#9b59b6',Traquinas:'#e67e22'};
+
+function pips(n,color){
+  return Array.from({length:5},(_,i)=>
+    `<div class="pip${i<n?' on':''}" style="${i<n?'color:'+color:''}"></div>`
+  ).join('');
+}
+
+function renderCard(c){
+  const ac=c.colors.accent;
+  const cc=catColors[c.category]||'#888';
+  const sp=speeches[c.name];
+  let html=`<div class="card-accent" style="background:linear-gradient(90deg,transparent,${ac},transparent)"></div>`;
+  html+=`<div class="card-border"></div>`;
+  html+=`<div class="card-symbol">${c.symbol}</div>`;
+  html+=`<div class="card-category" style="color:${cc}">${c.category}</div>`;
+  html+=`<div class="card-name brasilero">${c.name}</div>`;
+  html+=`<div class="card-subtitle">${c.subtitle}</div>`;
+  html+=`<div class="card-divider" style="background:${ac}"></div>`;
+  html+=`<div class="card-desc">${c.description}</div>`;
+  if(sp) html+=`<div class="card-speech" style="border-color:${ac}22">${sp.text.substring(0,120)}${sp.text.length>120?'...':''}</div>`;
+  html+=`<div class="card-stats"><div class="region">${c.region}</div><div class="danger">${pips(c.danger,ac)}</div></div>`;
+  document.getElementById('cardBack').innerHTML=html;
+}
+
+let currentCreature=null;
+let isFlipped=false;
+
+function drawCard(){
+  // Pick random creature
+  const c=creatures[Math.floor(Math.random()*creatures.length)];
+  currentCreature=c;
+  renderCard(c);
+  // Reset to face down then flip
+  const container=document.getElementById('cardContainer');
+  container.classList.remove('flipped');
+  isFlipped=false;
+  // Small delay then auto-flip
+  setTimeout(()=>{
+    container.classList.add('flipped');
+    isFlipped=true;
+  },300);
+}
+
+function flipCard(){
+  const container=document.getElementById('cardContainer');
+  if(!isFlipped&&!currentCreature){
+    // First click — draw random
+    drawCard();
+    return;
+  }
+  container.classList.toggle('flipped');
+  isFlipped=!isFlipped;
+}
+
+function toggleCollection(){
+  const col=document.getElementById('collection');
+  if(col.classList.contains('show')){
+    col.classList.remove('show');
+    return;
+  }
+  // Render all cards as mini cards
+  let html='';
+  creatures.forEach(c=>{
+    const cc=catColors[c.category]||'#888';
+    const dp=Array.from({length:5},(_,i)=>`<div class="p${i<c.danger?' on':''}"></div>`).join('');
+    html+=`<div class="mini-card" style="border-top:2px solid ${c.colors.accent}" onclick="showCard('${c.name.replace(/'/g,"\\'")}')">
+      <div class="sym">${c.symbol}</div>
+      <div class="nm brasilero">${c.name}</div>
+      <div class="ct" style="background:${cc}18;color:${cc}">${c.category}</div>
+      <div class="dng">${dp}</div>
+    </div>`;
+  });
+  col.innerHTML=html;
+  col.classList.add('show');
+  col.scrollIntoView({behavior:'smooth'});
+}
+
+function showCard(name){
+  const c=creatures.find(x=>x.name===name);
+  if(!c) return;
+  currentCreature=c;
+  renderCard(c);
+  const container=document.getElementById('cardContainer');
+  container.classList.remove('flipped');
+  isFlipped=false;
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>{
+    container.classList.add('flipped');
+    isFlipped=true;
+  },500);
+}
+
+// Draw initial card on load
+drawCard();
+</script>
+</body>
+</html>
